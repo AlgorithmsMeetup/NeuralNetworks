@@ -27,6 +27,7 @@ module.exports = {
           }
         }
         // pass this formatted data into trainBrain
+        // console.log('formatted data', formattedData);
         module.exports.trainBrain(training, testing);
       }
     });
@@ -37,26 +38,36 @@ module.exports = {
     console.log('Training your very own Brain');
 
     //TODO: Your code here to train the neural net
+    var net = new brain.NeuralNetwork({
+      hiddenLayers: [4]
+    });
+    net.train(trainingData, {
+      errorThresh: 0.05,  // error threshold to reach
+      iterations: 50,   // maximum training iterations
+      log: true,           // console.log() progress periodically
+      logPeriod: 10,       // number of iterations between logging
+      learningRate: 0.6    // learning rate
+    });
 
 
-    console.timeEnd('trainBrain');
+    // console.timeEnd('trainBrain');
 
     // once we've trained the brain, write it to json to back it up
     var jsonBackup = net.toJSON();
-    console.log(jsonBackup);
     var runBackup = net.toFunction();
-    module.exports.writeBrain(jsonBackup);
+    module.exports.writeBrain(jsonBackup, runBackup);
 
     // now test the results and see how our machine did!
-    module.exports.testBrain(testingData);
+    module.exports.testBrain(testingData, net);
   },
 
   //Test our brain with a given set of testData
   //Logs the output of default rate at that prediction level
-  testBrain: function(testData) {
+  testBrain: function(testData, net) {
     //console.time gives us the time it takes to complete a task
-    console.time('testBrain');
+    console.log('TEST BRAIN', testData);
     //TODO: Your code here to get the predicted values for everything in our testData
+    // var output = net.run(testData);
     //The logging code provided for you below expects the predicted net values to be stored as properties on each item in testData under the property name nnPredictions. 
     //Here's what an object in the testData array should look like after you've gotten the predicted result from the net:
       /*
@@ -90,6 +101,7 @@ module.exports = {
     }
 
     for(var i = 0; i < testData.length; i++) {
+      testData[i].nnPredictions = net.run(testData[i].input);
       //we format the net's prediction to be an int between 0 and 100
       var prediction = Math.round( testData[i].nnPredictions.defaulted * 100);
       //We then increment the total number of cases that the net predicts exist at this level of risk 
@@ -103,9 +115,9 @@ module.exports = {
     for(var key in results) {
       console.log(key + '- nnCount: ' + results[key].nnCount + ' defaulted: ' + results[key].defaulted + ' Default Rate: ' + Math.round(results[key].defaulted/results[key].nnCount * 100) );
     }
-    console.timeEnd('testBrain');
+    // console.timeEnd('testBrain');
 
-    console.log(results);
+    console.log('RESULTS', results);
   },
 
   //Takes our raw data input, roughly normalizes it, and transforms it into numbers between 0 and 1 like our net expects
@@ -153,13 +165,13 @@ module.exports = {
 
   //Writes the neural net to a file for backup
   //You can ignore this 
-  writeBrain: function(json) {
+  writeBrain: function(json, net) {
     var fileName = 'hiddenLayers' + net.hiddenSizes + 'learningRate' + net.learningRate + new Date().getTime();
     fs.writeFile(fileName, JSON.stringify(json), function(err) {
       if(err) {
         console.error('sad, did not write to file');
       } else {
-        console.log('wrote to file',fileName);
+        console.log('wrote to file', fileName);
       }
     });
   },
