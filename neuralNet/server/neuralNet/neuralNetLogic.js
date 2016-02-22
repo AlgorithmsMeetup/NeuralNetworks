@@ -6,6 +6,7 @@ var TYPE_INPUT = 'input';
 var TYPE_OUTPUT = 'output';
 
 // Our Neural Network
+//YOUR CODE HERE TO CHANGE NETWORK STRUCTURE//
 var net = new brain.NeuralNetwork({
       hiddenLayers: [4]
 });
@@ -31,6 +32,8 @@ module.exports = {
     console.log('Training your very own Brain');
 
     console.log('Neural Network meta information', net);
+
+    //YOUR CODE HERE TO CHANGE MODEL PARAMETERS//
     net.train(trainingData, {
       errorThresh: 0.05,  // error threshold to reach
       iterations: 50,   // maximum training iterations
@@ -53,7 +56,7 @@ module.exports = {
   testBrain: function(testData, verbose) {
     var output = net.run(testData);
       for(var i = 0; i < testData.length; i++) {
-        testData[i]['prediction'] = net.run(testData[i]['input']);
+        testData[i]['prediction'] = net.run(testData[i]['features']);
     }
     module.exports.logDataStructure(TYPE_OUTPUT, testData);
     module.exports.logPredictions(testData, verbose);
@@ -61,6 +64,7 @@ module.exports = {
 
 
   logPredictions: function(data, verbose) {
+    //YOUR CODE HERE TO LOOK AT MODEL OUTPUT//
     for (observation in data) {
       var defaulted = data[observation]['output']['defaulted'];
       if (defaulted == 0) {
@@ -68,7 +72,7 @@ module.exports = {
       } else {
         defaulted = 'defaulted';
       }
-      var prediction = data[observation]['prediction']['defaulted'];
+      var prediction = data[observation]'prediction']['defaulted'];
 
       if (verbose === true) {
         console.log('Person number ' + observation + ': ' + prediction + ' predicted probability of defaulting but actually ' + defaulted);
@@ -103,30 +107,23 @@ module.exports = {
     var formattedResults = [];
 
     for (var i = 0; i < data.length; i++) {
-      var item = data[i];
+      var observation = data[i];
 
-      var obs = {};
-      obs.input = {};
-      obs.output = {
-        defaulted: item['SeriousDlqin2yrs']
-      };
+      var formattedObservation = {};
+      formattedObservation.features = {};
+      formattedObservation.output = {};
 
+      formattedObsrvation.output.defaulted = observation.SeriousDlqin2yrs;
+
+
+      //YOUR CODE HERE TO USE DIFFERENT FEAUTURES//
       //if the utilization rate is below 1, we divide it by 3 to make it smaller (taking the cube root would make it larger);
-      if(item.creditUtilization < -999999) {
-        obs.input.utilizationRate = item['RevolvingUtilizationOfUnsecuredLines'] /3;
+      if(observation.creditUtilization < -999999) {
+        formattedObservation.features.utilizationRate = observation.RevolvingUtilizationOfUnsecuredLines / 3;
       } else {
-        //otherwise we take the cube root of it, and then divide by 37 (which is the max number we would have after cube rooting ).
-        obs.input.utilizationRate = 0.2
+        formattedObservation.features.utilizationRate = 0.2
       }
 
-      obs.input.age = item.age/109;
-      obs.input.thirtyDaysLate = item['NumberOfTime30-59DaysPastDueNotWorse'] / 98;
-      obs.input.monthlyIncome = Math.sqrt(item['MonthlyIncome']) / 1735;
-      obs.input.openCreditLines = Math.sqrt(item['NumberOfOpenCreditLinesAndLoans'])/8;
-      obs.input.ninetyDaysLate = Math.sqrt(item['NumberOfTimes90DaysLate']) / 10;
-      obs.input.realEstateLines = item['NumberRealEstateLoansOrLines'] / 54;
-      obs.input.sixtyDaysLate = Math.sqrt(item['NumberOfTime60-89DaysPastDueNotWorse']) / 10;
-      obs.input.numDependents = Math.sqrt(item['NumberOfDependents']) / 5;
       formattedResults.push(obs);
     }
     console.log('Finished formatting the data');
