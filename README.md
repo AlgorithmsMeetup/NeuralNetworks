@@ -4,7 +4,7 @@ PreCourse Steps:
 * **Look at the Kaggle Compeition: https://www.kaggle.com/c/GiveMeSomeCredit**
 * **Run the node.js server**
   2. If you're not familiar with Node.js, fork and clone my repo
-    1. Go to https://github.com/AglorithmsMeetup/learningMachines and click Fork in the upper right. 
+    1. Go to https://github.com/AlgorithmsMeetup/NeuralNetworks and click Fork in the upper right. 
     2. `cd ~/Desktop` changes directory to the Desktop. Feel free to use whichever directory you want.
     3. `git clone https://github.com/YOUR_USERNAME_HERE/learningMachines` creates a folder on your Desktop that is a clone of your fork
     1. `cd learningmachines` changes the directory into that folder
