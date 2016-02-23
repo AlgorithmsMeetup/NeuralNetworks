@@ -72,7 +72,7 @@ module.exports = {
       } else {
         defaulted = 'defaulted';
       }
-      var prediction = data[observation]'prediction']['defaulted'];
+      var prediction = data[observation]['prediction']['defaulted'];
 
       if (verbose === true) {
         console.log('Person number ' + observation + ': ' + prediction + ' predicted probability of defaulting but actually ' + defaulted);
@@ -113,7 +113,7 @@ module.exports = {
       formattedObservation.features = {};
       formattedObservation.output = {};
 
-      formattedObsrvation.output.defaulted = observation.SeriousDlqin2yrs;
+      formattedObservation.output.defaulted = observation.SeriousDlqin2yrs;
 
 
       //YOUR CODE HERE TO USE DIFFERENT FEAUTURES//
@@ -124,7 +124,7 @@ module.exports = {
         formattedObservation.features.utilizationRate = 0.2
       }
 
-      formattedResults.push(obs);
+      formattedResults.push(formattedObservation);
     }
     console.log('Finished formatting the data');
     return formattedResults;
